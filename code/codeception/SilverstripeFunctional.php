@@ -371,7 +371,7 @@ class SilverstripeFunctional extends \Codeception\Module
 
 	public function createPage($pageType, $title)
 	{
-		$this->I->click(['xpath' => "//div[contains(@class,'cms-tree-view-sidebar')]/div[@class='cms-content-toolbar']/div[@class='cms-actions-row']/a[contains(@data-icon,'add')]"]);
+		$this->I->click(['xpath' => "//div[@class='cms-actions-row']/a[contains(@data-icon,'add')]/span[contains(.,'Add new')]"]);
 		$this->waitForAjax();
 
 		$this->I->click(['xpath' => '//input[@name="PageType"][@value="'.$pageType.'"]']);
