@@ -369,15 +369,45 @@ class SilverstripeFunctional extends \Codeception\Module
 		$this->I->attachFile($xpath, $filePath);
 	}
 
-	public function createPage($pageType, $title)
+	public function createPage($pageType, $pageTitle, $parentPage = null)
 	{
 		$this->I->click(['xpath' => "//div[@class='cms-actions-row']/a[contains(@data-icon,'add')]/span[contains(.,'Add new')]"]);
 		$this->waitForAjax();
 
+
+		if($parentPage){
+			$last = '';
+			if(is_string($parentPage)) {
+				$last = $parentPage;
+			}
+
+			if(is_array($parentPage)) {
+				$last = array_pop($parentPage);
+			}
+
+			if(!$this->canVerify(['xpath' => '//span[@class="treedropdownfield-title"]/span[contains(.,"'.$last.'")]'])) {
+				$this->I->click(['xpath' => '//span[@class="treedropdownfield-title"]']);
+
+				$this->waitForAjax();
+
+				foreach($parentPage as $title) {
+					if($this->canVerify(['xpath' => '//li[contains(@class,"jstree-closed")][a/span[@class="item"][contains(.,"'.$title.'")]]'])) {
+						$clickPath = '//li[contains(@class,"jstree-closed")][a/span[@class="item"][contains(.,"'.$title.'")]]/ins';
+						$this->I->click(['xpath' => $clickPath]);
+						$this->waitForAjax();
+					}
+				}
+
+				$clickPath = '//li/a/span[contains(@class,"item")][contains(.,"'.$last.'")]';
+				$this->I->click(['xpath' => $clickPath]);
+				$this->waitForAjax();
+			}
+		}
+
 		$this->I->click(['xpath' => '//input[@name="PageType"][@value="'.$pageType.'"]']);
 		$this->clickModelAdminCreateButton();
 
-		$this->I->fillField('Title', $title);
+		$this->I->fillField('Title', $pageTitle);
 		$this->waitForAjax();
 		usleep(500);
 	}
