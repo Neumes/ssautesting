@@ -27,7 +27,7 @@ class SilverstripeFunctional extends \Codeception\Module
 		if(isset($config[$u]) && isset($config[$p])) {
 			return true;
 		}
-		return $false;
+		return false;
 	}
 
 	public function loginToAdminAs($user = null) {
